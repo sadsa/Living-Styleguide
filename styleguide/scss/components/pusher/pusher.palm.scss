@@ -1,0 +1,25 @@
+.pusher{
+    position: relative;
+    left: 0;
+    z-index: 99;
+    height: 100%;
+    -webkit-transition: -webkit-transform 0.5s;
+    transition: transform 0.5s;
+    &:after{
+        position: relative;
+        left: 0;
+        z-index: 99;
+        height: 100%;
+        -webkit-transition: -webkit-transform 0.5s;
+        transition: transform 0.5s;    
+    }
+}
+
+.pusher__content{}
+
+.js-menu-open{
+    .pusher{
+        -webkit-transform: translate3d(300px, 0, 0);
+        transform: translate3d(300px, 0, 0);    
+    }
+}

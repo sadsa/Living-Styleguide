@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <title>{{page.title}}</title>
+
+    <!-- FONT -->
+    <link href='//fonts.googleapis.com/css?family=Raleway:400,300,600' rel='stylesheet' type='text/css'>
+
+	{{> theme}}
+	{{> highlight}}    
+
+</head>
+
+<body>
+
+    <div class="wrapper">
+
+        <nav class="menu">
+           
+            <button class="menu__button" id="menu-trigger">Open Menu</button>                     
+           
+            {{#each pages}} {{#if isDirectory}} 
+            
+            <h2 class="menu__header">{{name}}</h2>
+            
+            <ul class="menu__list">
+                {{#each pages}}
+                <li class="menu__item">
+                    {{#if isDirectory}}
+                    <a class="menu__link">{{name}}</a>
+                    <ul class="sub-menu">
+                        {{#each pages}}
+                        <li class="menu__item">
+                            {{#if isDirectory}} {{name}}
+                            <ul class="menu">
+                                {{#each pages}}
+                                <li class="menu__item">
+                                    <a href="{{> root}}/{{href}}" class="menu__link">{{title}}</a>
+                                </li>
+                                {{/each}}
+                            </ul>
+                            {{/if}} {{#if isFile}}
+                            <a href="{{> root}}/{{href}}" class="menu__link">{{title}}</a>
+                            {{/if}}
+                        </li>
+                        {{/each}}
+                    </ul>
+                    {{/if}} {{#if isFile}}
+                    <a href="{{> root}}/{{href}}" class="menu__link">{{title}}</a>
+                    {{/if}}
+                </li>
+                {{/each}}
+            </ul>
+            {{/if}} {{#if isFile}}
+            <a href="{{> root}}/{{href}}">{{title}}</a>
+            {{/if}} {{/each}}
+        </nav>
+
+        <div class="pusher">  
+
+            <div class="pusher__content">
+
+                <div class="container">
+
+                    <header class="header">
+                        <h1 class="title">Living Styleguide</h1>
+                    </header>
+
+                    <div id="content" class="docs-section">
+                        {{#each page.sections}}
+                        <div class="section">
+                            {{#if comment}}
+                            <div class="comment">{{{comment}}}</div>
+                            {{/if}} {{#if result}}
+                            <div class="result">
+                                <script class="result-placeholder" type="text/html">
+                                    {{{result}}}
+                                </script>
+                            </div>
+                            {{/if}} {{#if markup}}
+                            <div class="markup">{{{markup}}}</div>
+                            {{/if}}
+                        </div>
+                        {{/each}}
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+<script class="result-template" type="text/html">
+    <!DOCTYPE html>
+    <html>
+        <head>{{> assets}}</head>
+        <body onload="[[onload]]">[[body]]</body>
+    </html>
+</script>
+
+{{> scripts}}
+
+</body>
+
+</html>
