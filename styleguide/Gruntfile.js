@@ -77,7 +77,6 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-sass');    
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-contrib-watch');
-    grunt.loadNpmTasks('grunt-debug-task');
 
     // Where we tell Grunt what to do when we type "grunt" into the terminal.
     grunt.registerTask('default', [

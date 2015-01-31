@@ -17,7 +17,7 @@ module.exports = function(grunt) {
                 files: [{
                     expand: true,
                     cwd: 'scss/',
-                    src: ['components/*.scss'],
+                    src: ['base/*.scss', 'components/*.scss'],
                     dest: 'styleguide/'
                 }]
             }
@@ -87,7 +87,7 @@ module.exports = function(grunt) {
         // WATCH
         watch: {
             sass: {
-                files: ['Gruntfile.js', 'scss/**/*.scss', 'scss/*.scss'],
+                files: ['Gruntfile.js', 'scss/**/*.scss', 'scss/*.scss', 'views/*.html'],
                 tasks: [
                     'concat:palm', 'concat:lap', 'concat:desk',
                     'sass',
