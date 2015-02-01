@@ -1,3 +1,2 @@
 # Dependency directory
-/node_modules/
-!/node_modules/sassdown/
+node_modules/

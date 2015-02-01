@@ -20,8 +20,10 @@ var hljs = require('highlight.js');
 var cssmin = require('cssmin');
 var markdown = require('marked');
 var Handlebars = require('handlebars');
+var cheerio = require('cheerio');
 var AllHtmlEntities = require('html-entities').AllHtmlEntities;
 var entities = new AllHtmlEntities();
+
 
 // Quick utility functions
 // =======================
@@ -31,41 +33,58 @@ function datapath  (filename) { return path.resolve(__dirname, '..', 'data', fil
 function sourcify  (section, file) {
     return file.data.split(section)[1].split(Sassdown.config.option.commentStart)[0];
 }
+function fetchFromFile(placeholder){
+	
+	// get path between single quotes
+	var filePath = placeholder.substring(placeholder.indexOf('\'') + 1, placeholder.lastIndexOf('\'')),
+		hasIdentifier = filePath.indexOf('#') > 0,
+		fileContents = "";
+	
+	if (hasIdentifier){
+
+		var id = filePath.substring(filePath.indexOf('#'), filePath.length),
+			rawHtml,
+			domElem,
+			$;
+		
+		filePath = filePath.substring(0, filePath.indexOf('#'));
+		
+	    // return element by ID
+		rawHtml = grunt.file.read(filePath);
+		$ = cheerio.load(rawHtml);
+		fileContents = '```\n' + $(id) + '\n```';	
+		
+	} else {
+		fileContents = grunt.file.read(filePath);
+	}
+	
+    return fileContents;
+}
 function normalize (comment) {
-    // Get reference file placeholders between square brackets i.e. [src='/pathToHTMLFile']
-    var placeholders = comment.match(/\[(.*?)\]/g); 
+    // Get reference file placeholders between square brackets i.e. [src='/pathToHTMLFile#idOf']
+    var placeholders = comment.match(/\[(.*?)\]/g);
     // Strip custom comment start and end blocks
     comment = comment.replace(Sassdown.config.option.commentStart, '');
     comment = comment.replace(Sassdown.config.option.commentEnd, '');
     comment = comment.trim().replace(/^\*/, '').replace(/\n \* |\n \*|\n /g, '\n').replace(/\n   /g, '\n    ');
-    //replace placeholder with file contents
-    if(placeholders != null){
-        placeholders.forEach(function(placeholder){
-            comment = comment.replace(placeholder, fetchFromFile(placeholder));
-        });        
+    
+    if (placeholders !== null) {
+		//replace placeholder with file contents
+		placeholders.forEach(function (placeholder){
+			//check that a 'src' attribute exists
+			if (placeholder.indexOf('src') > 0) {
+				comment = comment.replace(placeholder, fetchFromFile(placeholder));
+			}
+        });
     }
     
     if (!comment.match('```') && comment.match('    ')) {
         comment = comment.replace(/    |```\n    /, '```\n    ');
         comment = comment.replace(/\n    /g, '\n').replace(/\n /g, '\n');
         comment += '\n```';
-    } 
+    }
     
     return comment;
-}
-
-function fetchFromFile(placeholder){
-    //check that a 'src' attribute exists
-    if(placeholder.indexOf('src') > 0){
-        var filePath = placeholder.substring(placeholder.indexOf("'") + 1, placeholder.lastIndexOf("'")); // returns path between single quotes
-    }else{
-        return placeholder;
-    }
-    // read file and wrap with markdown syntax
-    var fileContent = grunt.file.read(filePath);
-    fileContent = '```\n' + fileContent + '\n```';
-    
-    return fileContent; 
 }
 
 // Constants
